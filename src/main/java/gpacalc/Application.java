@@ -1,28 +1,29 @@
 package gpacalc;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Subject {
     private String name; // 과목명
-    private int number; // 학점
-    private String score; //  받은 점수
+    private int number; // 학점수
+    private double score; //  받은 점수
     private String field; // 전공, 교양
 
     public Subject() {
         this.name = "";
         this.number = 0;
-        this.score = "";
+        this.score = 0.0;
         this.field = "";
     }
 
-    public Subject(String field, String name, int number, String score) {
+    public Subject(String field, String name, int number, double score) {
         this.name = name;
         this.number = number;
         this.score = score;
-        this.field = "";
+        this.field = field;
     }
 
     public String getName() {return name;}
@@ -31,8 +32,8 @@ public class Subject {
     public int getNumber() {return number;}
     public void setNumber(int number) {this.number = number;}
 
-    public String getScore() {return score;}
-    public void setScore(String score) {this.score = score;}
+    public double getScore() {return score;}
+    public void setScore(double score) {this.score = score;}
 
     public String getField() {return field;}
     public void setField(String field) {this.field = field;}
@@ -43,11 +44,11 @@ public class Subject {
     }
 }
 
-public class CRUDSubject {
+public class SubjectManager {
     Scanner scanner;
     private ArrayList<Subject> subjectlist;
 
-    public CRUDSubject() {
+    public SubjectManager() {
         this.subjectlist = new ArrayList<Subject>();
         this.scanner = new Scanner(System.in);
     }
@@ -61,7 +62,7 @@ public class CRUDSubject {
 
         while (matcher.find()) {
             String[] result = matcher.group(1).split("-");
-            Subject subject = new Subject("전공", result[0], Integer.parseInt(result[1]), result[2]);
+            Subject subject = new Subject("전공", result[0], Integer.parseInt(result[1]),Double.parseDouble(result[2]));
             this.subjectlist.add(subject);
         }
 
@@ -73,7 +74,7 @@ public class CRUDSubject {
 
         while (matcher.find()) {
             String[] result = matcher.group(1).split("-");
-            Subject subject = new Subject("교양", result[0], Integer.parseInt(result[1]), result[2]);
+            Subject subject = new Subject("교양", result[0], Integer.parseInt(result[1]), Double.parseDouble(result[2]));
             this.subjectlist.add(subject);
         }
     }
@@ -83,6 +84,31 @@ public class CRUDSubject {
         for (Subject subject : subjectlist) {
             System.out.println(subject.toString());
         }
+    }
+
+    void SubjectCalculator(List<Subject> subjects) {
+        double Major_subjects = 0;
+        double Liberal_arts_courses = 0;
+        int total_number = 0;
+
+        for(Subject subject : subjects) {
+            if(subject.getField() ==  "전공") {
+                Major_subjects += subject.getScore();
+            }
+            else {
+                Liberal_arts_courses += subject.getScore();
+            }
+            total_number += subject.getNumber();
+        }
+
+        System.out.println("<취득학점>");
+        System.out.println(total_number + "학점");
+
+        System.out.println("<평점평균>");
+        System.out.println((Major_subjects + Liberal_arts_courses) + " / 4.5");
+
+        System.out.println("전공 평점평균");
+        System.out.println(Major_subjects + " / 4.5");
     }
 }
 
